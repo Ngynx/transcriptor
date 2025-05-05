@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from vosk import Model, KaldiRecognizer
 import pprint
 import argparse
+from typing import Dict
 
 # init config
 SAMPLE_RATE = 16000
@@ -77,10 +78,26 @@ def transcribe_audio(filename: str, model_path: str):
     print(f"[transcriptor.service] filename={filename}, model={model_path}")
     transcriber = Transcriber(model_path)
     transcription = transcriber.transcribe(filename)
-    pprint.pprint(transcription)
+    # pprint.pprint(transcription.get("transcription"))
 
     print(f"[transcriptor.service] filename={filename}, model={model_path}")
-    return {"status": "ok", "filename": filename, "model": model_path}
+    return {
+        "status": True, 
+        "filename": filename, 
+        "model": model_path,
+        "transcription": format_transcription(transcription.get("transcription"))
+    }
+
+
+def format_transcription(transcriptions: list[dict], start_index: int = 0, end_index: int = None) -> Dict:
+    sliced = transcriptions[start_index:end_index]
+    combined_text = ' '.join(item['text'] for item in sliced)
+    
+    return {
+        'start': sliced[0]['start'] if sliced else None,
+        'end': sliced[-1]['end'] if sliced else None,
+        'text': combined_text
+    }
 
 
 # # vosk-model-es-0.42

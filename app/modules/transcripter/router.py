@@ -4,6 +4,7 @@ from .service import transcribe_audio
 
 router = APIRouter()
 
+
 @router.post("/")
 def transcribe(req: TranscriptionRequest):
     return transcribe_audio(req.filename, req.model_name)
