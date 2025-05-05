@@ -1,3 +1,4 @@
 fastapi
 uvicorn[standard]
-vosk==0.3.45
+vosk
+python-dotenv

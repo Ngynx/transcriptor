@@ -4,10 +4,14 @@ from vosk import Model, KaldiRecognizer
 import pprint
 import argparse
 from typing import Dict
+from dotenv import load_dotenv
+import os
 
 # init config
+load_dotenv()
 SAMPLE_RATE = 16000
 CHUNK_SIZE = 4000
+DELTADISPATCH_PATH = os.getenv("DELTADISPATCH_PATH")
 
 class Transcriber():
     def __init__(self, model_path):
@@ -75,12 +79,15 @@ class Transcriber():
         }
 
 def transcribe_audio(filename: str, model_path: str):
-    print(f"[transcriptor.service] filename={filename}, model={model_path}")
-    transcriber = Transcriber(model_path)
-    transcription = transcriber.transcribe(filename)
-    # pprint.pprint(transcription.get("transcription"))
+    # remove the first dot if it exists
+    if filename.startswith("."):
+        filename = filename[1:]
 
-    print(f"[transcriptor.service] filename={filename}, model={model_path}")
+    deltadispatch_path = os.getenv("DELTADISPATCH_PATH")
+
+    transcriber = Transcriber(model_path)
+    transcription = transcriber.transcribe(deltadispatch_path + filename)
+
     return {
         "status": True, 
         "filename": filename, 
@@ -98,11 +105,3 @@ def format_transcription(transcriptions: list[dict], start_index: int = 0, end_i
         'end': sliced[-1]['end'] if sliced else None,
         'text': combined_text
     }
-
-
-# # vosk-model-es-0.42
-# filename = "midudev1.mp3"
-# model_path = "vosk-model-es-0.42"
-
-# transcribe_audio(filename, model_path)
-
