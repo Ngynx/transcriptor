@@ -3,10 +3,9 @@ Description=transcriptor
 After=network.target
 
 [Service]
-WorkingDirectory=/home/ngynx/transcriptor
+WorkingDirectory=/home/innova/transcriptor
 Environment="PATH=/home/innova/transcriptor/.venv/bin"
 ExecStart=/home/innova/transcriptor/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
-
 Restart=always
 RestartSec=5
 User=root
